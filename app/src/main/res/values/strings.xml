@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">harvester</string>
+    <string name="app_name">Harvester</string>
+    <string name="toolbar_dots">dots</string>
+    <string name="toolbar_scan">scan</string>
+    <string name="toolbar_menu">menu</string>
+    <string name="product_image">productImage</string>
+    <string name="alcohol_description">alcoholDescription</string>
+    <string name="scan_frame_width">150</string>
+    <string name="scan_frame_height">300</string>
+    <string name="network_on">Internet: ON</string>
+    <string name="network_off">Internet: OFF</string>
+    <string name="description_view_text">Ботинки Brooman 092-611-12 для перехода на следующую строку</string>
+    <string name="characteristic_view_name">Характеристика</string>
+    <string name="characteristic_view_text">Кожа, ТЭП, Черный не покрашенный 42</string>
+    <string name="count_view_name">Кол-во</string>
+    <string name="count_view_text_scanned">10</string>
+    <string name="count_view_text_unscanned">6</string>
+    <string name="sum_view_name">Сумма</string>
+    <string name="sum_view_text">200.00</string>
+    <string name="code_view_text">200</string>
+    <string name="volume_view_text">0.750</string>
+    <string name="percentage_view_text">12%</string>
+    <string name="article_view_text">092-661-12</string>
+    <string name="table_of_goods">
+
+    </string>
 </resources>

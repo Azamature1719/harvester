@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:layout_marginTop="10dp"
+    >
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineIconProduct"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="320dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineCount"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="150dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineSum"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="100dp" />
+
+    <TextView
+        android:id="@+id/productName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@id/guidelineIconProduct"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/description_view_text" />
+
+    <TextView
+        android:id="@+id/labelCharacteristic"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/characteristic_view_name"
+        android:textSize="10sp"
+        app:layout_constraintTop_toBottomOf="@+id/productName"
+        app:layout_constraintStart_toStartOf="@id/guidelineIconProduct"/>
+
+    <TextView
+        android:id="@+id/productDescription"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:text="@string/characteristic_view_text"
+        app:layout_constraintStart_toStartOf="@id/guidelineIconProduct"
+        app:layout_constraintEnd_toStartOf="@id/guidelineCount"
+        app:layout_constraintTop_toBottomOf="@id/labelCharacteristic"/>
+
+    <LinearLayout
+        android:id="@+id/linearLayCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintStart_toEndOf="@id/guidelineCount"
+        app:layout_constraintTop_toBottomOf="@+id/productName"
+        android:gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp">
+        <TextView
+            android:id="@+id/labelCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="10sp"
+            android:text="@string/count_view_name"
+            />
+        <TextView
+            android:id="@+id/productScannedCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/black"
+            android:text="@string/count_view_text_scanned"
+            />
+        <TextView
+            android:id="@+id/productNotScannedCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="11sp"
+            android:text="@string/count_view_text_unscanned"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/productName"
+        app:layout_constraintStart_toEndOf="@id/guidelineSum"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp">
+        <TextView
+            android:id="@+id/labelSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sum_view_name"
+            android:textSize="10sp"
+            android:layout_gravity="center" />
+        <TextView
+            android:id="@+id/productSum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sum_view_text"
+            android:textSize="13sp"
+            android:textColor="@color/black"
+            android:layout_gravity="center"/>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/iconBottle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/productName"
+        app:layout_constraintEnd_toStartOf="@id/guidelineIconProduct"
+        android:layout_marginStart="10dp">
+
+        <ImageView
+            android:id="@+id/imageBottle"
+            android:layout_width="wrap_content"
+            android:layout_height="80dp"
+            android:contentDescription="@string/alcohol_description"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_bottle" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="6dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/alcoholCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/code_view_text"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/alcoholVolume"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/volume_view_text"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/alcoholStrength"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/percentage_view_text"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/iconBottle"
+        app:layout_constraintEnd_toStartOf="@id/guidelineIconProduct"
+        android:layout_marginStart="10dp">
+
+        <LinearLayout
+            android:id="@+id/iconShoes"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="5dp"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/imageShoes"
+                android:layout_width="wrap_content"
+                android:layout_height="55dp"
+                android:contentDescription="@string/product_image"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_shoes" />
+
+            <TextView
+                android:id="@+id/shoesArticle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/article_view_text"
+                android:textColor="@color/black"
+                android:textSize="10sp" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

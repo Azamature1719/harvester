@@ -1,5 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable-anydpi/ic_action_name.xml" value="0.326" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable-anydpi/ic_scan.xml" value="0.1365" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable-v24/harvester_foreground.xml" value="0.32" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/bitmap_background.xml" value="0.1" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/ic_background.xml" value="0.1565" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/ic_bottle.xml" value="0.3215" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/ic_dots.xml" value="0.326" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/ic_launcher_background.xml" value="0.32" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/ic_list.xml" value="0.326" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/ic_scan.xml" value="0.326" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/ic_shoes.xml" value="0.326" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/drawable/krugliye_ugli.xml" value="0.3045" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/layout/main_activity.xml" value="0.23641304347826086" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/layout/main_fragment.xml" value="0.22" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/layout/product_recycler_view_item.xml" value="0.5" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/menu/toolbar_main.xml" value="0.75" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/xml/table_of_goods_empty.xml" value="0.24635416666666668" />
+        <entry key="..\:/GitHub/harvester/app/src/main/res/xml/table_of_goods_full.xml" value="0.24635416666666668" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
