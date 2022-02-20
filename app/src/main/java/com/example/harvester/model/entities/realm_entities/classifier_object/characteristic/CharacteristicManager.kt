@@ -10,24 +10,23 @@ import io.realm.kotlin.where
 fun Characteristic.ffetch(record: XMLRecordDTO, product: Product?): Characteristic?{
     if(product == null) return null
 
-    var desc = record.characteristicOfNomenclature
-    if (desc.isNullOrEmpty()) return null
-//
-//    var previousChar = Characteristic().fetch(desc)
-//    if(previousChar != null) return previousChar
+    var description = record.characteristicOfNomenclature
+    if (description.isNullOrEmpty()) return null
+
+    var previousChar = Characteristic().fetch(description)
+    if(previousChar != null) return previousChar
 
     var characteristic = Characteristic()
-    characteristic.desc = desc
-    characteristic.product = product
-
+    characteristic.description = description
+    characteristic.product =
 
     App.realm.beginTransaction()
-    var characteristicRef = App.realm.copyToRealm(characteristic)
+    var charRef = App.realm.copyToRealm(characteristic)
     App.realm.commitTransaction()
-    return characteristicRef
+
+    return charRef
 }
 
-fun Characteristic.fetch(desc: String): Characteristic?{
-    val characteristicQuery = App.realm.where(Characteristic::class.java)
-    return characteristicQuery.like("desc", desc).findFirst()
+fun Characteristic.fetch(description: String): Characteristic?{
+    return App.realm.where(Characteristic::class.java).equalTo("description", description).findFirst()
 }

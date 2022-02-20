@@ -10,6 +10,7 @@ fun Barcode.ffetch(barcode: String, product: Product?, characteristic: Character
     val fetchedBarcode = fetch(barcode)
     if(fetchedBarcode != null) return fetchedBarcode
 
+    println(product)
     val record = Barcode()
     record.barcode = barcode
     record.product = product

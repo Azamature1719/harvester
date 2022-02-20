@@ -19,6 +19,7 @@ class App : Application() {
         }
     }
 
+
     companion object {
         lateinit var realm: Realm
 

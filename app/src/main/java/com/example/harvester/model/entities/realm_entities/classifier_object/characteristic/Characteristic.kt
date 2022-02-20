@@ -12,7 +12,7 @@ open class Characteristic: RealmObject() {
     @PrimaryKey
     var uuid: String = UUID.randomUUID().toString()
     var code: String = ""
-    var desc: String = ""
+    var description: String = ""
 
     // @product - какому товару принадлежит данная характеристика
     var product: Product? = null

@@ -5,27 +5,27 @@ import com.example.harvester.model.DTO.XMLRecordDTO
 import com.example.harvester.model.entities.realm_entities.product_type.ProductType
 import io.realm.Realm
 import io.realm.kotlin.where
+import kotlin.reflect.typeOf
 
 fun Product.ffetch(record: XMLRecordDTO): Product?{
-    var desc: String?
+    var description: String?
     var alcoholCode = record.alcoholCode
     var name = record.name
 
     if(alcoholCode.isNullOrEmpty())
-        desc = name
+        description = name
     else
-        desc = alcoholCode
+        description = alcoholCode
 
     var unitMeasurement = record.unitOfMeasurement
-    if(desc.isNullOrEmpty()) desc = unitMeasurement
+    if(description.isNullOrEmpty()) description = unitMeasurement
 
-    if(desc.isNullOrEmpty())
+    if(description.isNullOrEmpty())
         return null
-//
-//    println(desc)
-//    val fetchedProduct = fetch(desc)
-//    if(fetchedProduct != null)
-//        return fetchedProduct
+
+    val fetchedProduct = fetch(description)
+    if(fetchedProduct != null)
+        return fetchedProduct
 
     var article = record.article
     if(article.isNullOrEmpty()) article = ""
@@ -35,7 +35,7 @@ fun Product.ffetch(record: XMLRecordDTO): Product?{
         markedGoodTypeCode = ProductType.none.ordinal
 
     var product: Product = Product()
-    product.desc = desc
+    product.description = description
     product.article = article
 
     if(record.alcohol){
@@ -50,14 +50,13 @@ fun Product.ffetch(record: XMLRecordDTO): Product?{
     else
         product._marked = markedGoodTypeCode
 
-
     App.realm.beginTransaction()
-    var productRef: Product = App.realm.copyToRealmOrUpdate(product)
+    var productRef = App.realm.copyToRealm(product)
     App.realm.commitTransaction()
     return productRef
 }
 
-fun Product.fetch(desc: String): Product?{
-    val objects = App.realm.where<Product>().equalTo("desc", desc)
-    return objects.findFirst()
+fun Product.fetch(description: String): Product?{
+    val product = App.realm.where(Product::class.java).equalTo("description", description).findFirstAsync()
+    return product
 }

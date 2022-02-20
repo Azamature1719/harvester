@@ -41,8 +41,8 @@ class RepositoryImpl: Repository {
             curProduct.alcoholVolume = products[i]?.alcoholVolume
             curProduct.article = products[i]?.article
             curProduct.markedGoodTypeCode = products[i]!!._marked
-            curProduct.name = products[i]?.desc
-            curProduct.description = characteristics[i]?.desc
+            curProduct.name = products[i]?.description
+            curProduct.description = characteristics[i]?.description
           //  val price = App.realm.where<Price>().equalTo("product.uuid", products[i]!!.uuid).findFirst()
             curProduct.price = 0.0
             curProduct.quantity = 10
@@ -53,11 +53,12 @@ class RepositoryImpl: Repository {
 
 
     override fun getProductsFromXMLTable(): MutableList<XMLRecordDTO> {
-        return XMLParser.parseXML(TableOfGoodsXML.fullTable)
+        return XMLParser.parseXML(TableOfGoodsXML.emptyTable)
     }
 
     override fun fullFillDatabase(records: MutableList<XMLRecordDTO>) {
         for (record in records) {
+            println(record)
             // -- Извлечение данных из таблицы товаров --
             // -- Штрихкод  --
             val barcodeBase64: String? = record.barCodeBase64
@@ -91,9 +92,9 @@ class RepositoryImpl: Repository {
             val characteristic = Characteristic().ffetch(record, product)
             val barcodeRecord = Barcode().ffetch(barcode, product, characteristic)
 
-//            var price = record.price
-//            if (price > 0.0 || price != null)
-//                Price().update(price.toDouble(), product, characteristic)
+            var price = record.price
+            if (price > 0.0 || price != null)
+                Price().update(price.toDouble(), product, characteristic)
 
             var quantity = record.quantity
 

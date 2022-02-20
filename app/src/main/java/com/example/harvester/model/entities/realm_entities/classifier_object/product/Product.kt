@@ -12,7 +12,7 @@ open class Product : RealmObject() {
     @PrimaryKey
     var uuid: String = UUID.randomUUID().toString()
     var code: String = ""
-    var desc: String = ""
+    var description: String? = ""
 
     // @marked - товарная категория
     // @_marked - для инициализации товарной категории

@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.widget.Toast
 import com.example.harvester.R
+import com.example.harvester.framework.App
 import com.example.harvester.framework.ui.main.MainFragment
+import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
+import io.realm.kotlin.delete
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,5 +36,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }
