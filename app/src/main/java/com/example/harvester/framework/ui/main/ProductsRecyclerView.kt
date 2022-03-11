@@ -16,6 +16,7 @@ class ProductsRecyclerView () : RecyclerView.Adapter<ProductsRecyclerView.Produc
     private lateinit var listItems: MutableList<ProductInfoDTO>
 
     fun setItems(items: MutableList<ProductInfoDTO>) {
+        println(items)
         listItems = items
         notifyDataSetChanged()
     }

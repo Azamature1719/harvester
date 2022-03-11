@@ -1,5 +1,6 @@
 package com.example.harvester.model.repository
 
+import com.example.harvester.MainActivity
 import com.example.harvester.framework.App
 import com.example.harvester.model.DTO.ProductInfoDTO
 import com.example.harvester.model.DTO.XMLRecordDTO
@@ -7,8 +8,10 @@ import com.example.harvester.model.XMLParser
 import com.example.harvester.model.entities.TableOfGoodsXML
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.ffetch
+import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.findAll
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.ffetch
+import com.example.harvester.model.entities.realm_entities.classifier_object.product.findAll
 import com.example.harvester.model.entities.realm_entities.information_register.barcode.Barcode
 import com.example.harvester.model.entities.realm_entities.information_register.barcode.ffetch
 import com.example.harvester.model.entities.realm_entities.information_register.barcode_harvested.BarcodeHarvested
@@ -20,20 +23,21 @@ import com.example.harvester.model.entities.realm_entities.information_register.
 import com.example.harvester.model.entities.realm_entities.information_register.price.Price
 import com.example.harvester.model.entities.realm_entities.information_register.price.update
 import io.realm.Realm
-import io.realm.RealmList
-import io.realm.kotlin.toFlow
 import io.realm.kotlin.where
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 
 class RepositoryImpl: Repository {
+
     override fun getProductsFromDatabase(): MutableList<ProductInfoDTO> {
-        fullFillDatabase(getProductsFromXMLTable())
+        val productsFromXML = getProductsFromXMLTable()
+         runBlocking { withContext(Dispatchers.IO){ fullFillDatabase(productsFromXML) }}
 
-        val products = App.realm.where<Product>().findAll()
-        val characteristics = App.realm.where<Characteristic>().findAll()
+        val products: List<Product> = Product().findAll()
+        val characteristics: List<Characteristic> = Characteristic().findAll()
+
         var listOfProducts: MutableList<ProductInfoDTO> = mutableListOf()
-
-        println(products.size)
         for (i in 0 until products.size){
             var curProduct: ProductInfoDTO = ProductInfoDTO()
             curProduct.alcoholCapacity = products[i]?.alcoholCapacity
@@ -43,7 +47,6 @@ class RepositoryImpl: Repository {
             curProduct.markedGoodTypeCode = products[i]!!._marked
             curProduct.name = products[i]?.description
             curProduct.description = characteristics[i]?.description
-          //  val price = App.realm.where<Price>().equalTo("product.uuid", products[i]!!.uuid).findFirst()
             curProduct.price = 0.0
             curProduct.quantity = 10
             listOfProducts.add(curProduct)
@@ -58,7 +61,6 @@ class RepositoryImpl: Repository {
 
     override fun fullFillDatabase(records: MutableList<XMLRecordDTO>) {
         for (record in records) {
-            println(record)
             // -- Извлечение данных из таблицы товаров --
             // -- Штрихкод  --
             val barcodeBase64: String? = record.barCodeBase64
@@ -87,7 +89,7 @@ class RepositoryImpl: Repository {
                 containerBarcode = containerBarcodeBase64
 
             // -- Сохранение товаров в таблицу ContainerRecordManager --
-            val container = Container().ffetch(barcode = containerBarcode)
+            val container = Container().ffetch(containerBarcode)
             val product = Product().ffetch(record)
             val characteristic = Characteristic().ffetch(record, product)
             val barcodeRecord = Barcode().ffetch(barcode, product, characteristic)

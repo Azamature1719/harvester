@@ -24,7 +24,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = MainFragmentBinding.inflate(inflater, container, false)
-
         setHasOptionsMenu(true)
         return binding.root
     }

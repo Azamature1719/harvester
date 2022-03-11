@@ -7,18 +7,17 @@ import io.realm.annotations.PrimaryKey
 import java.util.*
 
 // -- Описание записи регистра Штрихкоды упаковок и товаров --
-open class Barcode: RealmObject(){
-
+open class Barcode (
     // -- Характеристики объекта класса --
     @PrimaryKey
-    var uuid: String = UUID.randomUUID().toString()
-    var currentDate: Date = Date()
-    //  var dateText: String = ""
+    var uuid: String = UUID.randomUUID().toString(),
+    var currentDate: Date = Date(),
+    var dateText: String = "",
 
     //  @barcode - штрихкод
     //  @product - товарная номенклатура (часть 1 связки)
     //  @characteristic - характеристика товара (часть 2 связки)
-    var barcode:String = ""
-    var product: Product? = null
+    var barcode:String = "",
+    var product: Product? = null,
     var characteristic: Characteristic? = null
-}
+): RealmObject()

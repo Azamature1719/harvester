@@ -1,116 +1,93 @@
 package com.example.harvester.model.entities.realm_entities.information_register.data_harvested
 
+import android.content.ClipDescription
+import com.example.harvester.framework.App
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
 import com.example.harvester.model.entities.realm_entities.information_register.container.Container
+import com.vicpin.krealmextensions.query
+import com.vicpin.krealmextensions.queryFirst
+import com.vicpin.krealmextensions.queryLast
+import com.vicpin.krealmextensions.save
 import io.realm.Realm
 import io.realm.kotlin.where
+import kotlinx.coroutines.runBlocking
 
 // MARK: Обновление учетного количества в регистре по ключевым реквизитам. Используется для загрузки данных из ERP системы
-fun DataHarvested.update(desc: String?,
+fun DataHarvested.update(description: String?,
                          product: Product?,
                          characteristic: Characteristic?,
                          container: Container?,
-                         quantityAcc: Double): DataHarvested?{
+                         quantityAcc: Double): DataHarvested? {
     if(quantityAcc == 0.0) return null
 
-    val realm =  Realm.getDefaultInstance()
-    var objects = realm.where<DataHarvested>()
-
-    // QUESTION: Почему такой выбор - КМ или ШХ?
+    var dataHarvested: DataHarvested?
     if(product == null){
-        objects.equalTo("desc", desc).and()
-            .equalTo("product.uuid", product?.uuid)
-    } else{
-        objects.equalTo("product.uuid", product.uuid).and()
-            .equalTo("characteristic.uuid", characteristic?.uuid).and()
-            .equalTo("container.uuid", container?.uuid)
+        dataHarvested = DataHarvested().queryFirst() {
+            equalTo("description", description).and().
+            equalTo("product.uuid", product?.uuid)
+        }
+    } else {
+        dataHarvested = DataHarvested().queryFirst() {
+            equalTo("product.uuid", product.uuid).and().
+            equalTo("characteristic.uuid", characteristic?.uuid).and().
+            equalTo("container.uuid", container?.uuid)
+        }
     }
 
-    var objectFirst = objects.findFirst()
-    return if(objectFirst != null){
-        objectFirst.quantityAcc += quantityAcc
-        objectFirst
-    } else{
-        objectFirst = DataHarvested()
-        objectFirst.desc = desc
-        objectFirst.product = product
-        objectFirst.characteristic = characteristic
-        objectFirst.container = container
-        objectFirst.quantityAcc += quantityAcc
-        realm.executeTransactionAsync{
-            realm.copyToRealm(objectFirst)
-        }
-        realm.close()
-        objectFirst
+    if(dataHarvested != null){
+        dataHarvested.quantityAcc += quantityAcc
+        return dataHarvested
+    } else {
+        DataHarvested(
+            description = description,
+            product = product,
+            characteristic = characteristic,
+            container = container,
+            quantityAcc = quantityAcc
+        ).save()
+        return DataHarvested().queryLast()
     }
 }
 
 // MARK: Поиск записи регистра по ключевым полям и создание при отсутствии
-fun DataHarvested.ffetch(desc: String): DataHarvested{
-    val fetchedObject = DataHarvested().fetch(desc)
+fun DataHarvested.ffetch(description: String): DataHarvested{
+    val fetchedObject = DataHarvested().fetch(description)
     if(fetchedObject != null) return fetchedObject
 
-    var dataHarvestedRecord = DataHarvested()
-    dataHarvestedRecord.desc = desc
-
-    var realm = Realm.getDefaultInstance()
-    lateinit var recordCopy:DataHarvested
-    realm.executeTransaction {
-        recordCopy = realm.copyToRealm(dataHarvestedRecord)
-    }
-    return recordCopy
+    DataHarvested(description = description).save()
+    return DataHarvested().queryLast()!!
 }
 
 fun DataHarvested.ffetch(product: Product,
-                                      characteristic: Characteristic,
-                                      container: Container?): DataHarvested{
+                         characteristic: Characteristic,
+                         container: Container?): DataHarvested{
 
-    val realm = Realm.getDefaultInstance()
-    val objects =  realm.where<DataHarvested>()
-        .equalTo("product.uuid", product.uuid).and()
-        .equalTo("characteristic", characteristic.uuid)
-        .findFirst()
+    val dataHarvested = DataHarvested().queryFirst{
+        equalTo("product.uuid", product.uuid).and().
+        equalTo("characteristic", characteristic.uuid)}
 
-    if(objects != null){
-        if (objects.quantityAcc == 0.0 ||
-            objects.quantity < objects.quantityAcc)
-            return objects
+    if(dataHarvested != null){
+        if (dataHarvested.quantityAcc == 0.0 ||
+            dataHarvested.quantity < dataHarvested.quantityAcc)
+            return dataHarvested
     }
 
-    var dataHarvestedRecord = DataHarvested()
-    dataHarvestedRecord.characteristic = characteristic
-    dataHarvestedRecord.container = container
-    dataHarvestedRecord.product = product
-
-    realm.beginTransaction()
-    var dataHarvestedRef = realm.copyToRealm(dataHarvestedRecord)
-    realm.commitTransaction()
-    realm.close()
-
-    return dataHarvestedRef
+    DataHarvested(characteristic = characteristic, container = container, product = product).save()
+    return DataHarvested().queryLast()!!
 }
 
 // MARK: Поиск записи регистра по ключевому полю desc
-fun DataHarvested.fetch(desc: String):DataHarvested?{
-    val realm = Realm.getDefaultInstance()
-    val objects = realm.where<DataHarvested>().equalTo("desc", desc).findFirst()
-    realm.close()
-    return objects
+fun DataHarvested.fetch(description: String):DataHarvested?{
+    return DataHarvested().queryFirst{equalTo("description", description)}
 }
 
 // MARK: Поиск записи регистра по ключевым полям product, characteristic, container
 fun DataHarvested.fetch(product: Product?, characteristic: Characteristic?, container: Container?): DataHarvested?{
-    val realm = Realm.getDefaultInstance()
-
     if(product == null || characteristic == null || container == null) return null
-
-    val objects = realm.where<DataHarvested>()
-        .equalTo("product.uuid", product.uuid).and()
-        .equalTo("characteristic.uuid", characteristic.uuid).and()
-        .equalTo("container.uuid", container.uuid)
-        .findFirst()
-
-    realm.close()
-    return objects
+    return DataHarvested().queryFirst{
+         equalTo("product.uuid", product.uuid).and().
+         equalTo("characteristic.uuid", characteristic.uuid).and().
+         equalTo("container.uuid", container.uuid)
+    }
 }

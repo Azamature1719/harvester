@@ -1,5 +1,6 @@
 package com.example.harvester
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -8,6 +9,8 @@ import com.example.harvester.R
 import com.example.harvester.framework.App
 import com.example.harvester.framework.ui.main.MainFragment
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
+import io.realm.Realm
+import io.realm.RealmConfiguration
 import io.realm.kotlin.delete
 
 class MainActivity : AppCompatActivity() {

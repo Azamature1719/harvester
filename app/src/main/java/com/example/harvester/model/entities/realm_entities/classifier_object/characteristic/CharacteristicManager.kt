@@ -3,9 +3,16 @@ package com.example.harvester.model.entities.realm_entities.classifier_object.ch
 import com.example.harvester.framework.App
 import com.example.harvester.model.DTO.XMLRecordDTO
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
+import com.vicpin.krealmextensions.queryAll
+import com.vicpin.krealmextensions.queryFirst
+import com.vicpin.krealmextensions.queryLast
+import com.vicpin.krealmextensions.save
 import io.realm.CollectionUtils.copyToRealm
 import io.realm.Realm
+import io.realm.RealmObject
 import io.realm.kotlin.where
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 fun Characteristic.ffetch(record: XMLRecordDTO, product: Product?): Characteristic?{
     if(product == null) return null
@@ -16,17 +23,14 @@ fun Characteristic.ffetch(record: XMLRecordDTO, product: Product?): Characterist
     var previousChar = Characteristic().fetch(description)
     if(previousChar != null) return previousChar
 
-    var characteristic = Characteristic()
-    characteristic.description = description
-    characteristic.product =
-
-    App.realm.beginTransaction()
-    var charRef = App.realm.copyToRealm(characteristic)
-    App.realm.commitTransaction()
-
-    return charRef
+    Characteristic(description = description, product = product).save()
+    return Characteristic().queryLast()
 }
 
 fun Characteristic.fetch(description: String): Characteristic?{
-    return App.realm.where(Characteristic::class.java).equalTo("description", description).findFirst()
+    return Characteristic().queryFirst{equalTo("description", description)}
+}
+
+fun Characteristic.findAll(): List<Characteristic> {
+    return Characteristic().queryAll()
 }

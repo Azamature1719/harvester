@@ -7,18 +7,17 @@ import io.realm.annotations.PrimaryKey
 import java.util.*
 
 // -- Описание записи регистра Цены номенклатуры --
-open class Price: RealmObject() {
-
+open class Price(
     // -- Характеристики объекта класса --
     @PrimaryKey
-    var uuid: String = UUID.randomUUID().toString()
-    var currentDate: Date = Date()
+    var uuid: String = UUID.randomUUID().toString(),
+    var currentDate: Date = Date(),
     // var dateText: String = ""
 
     // @product - товар, цена которого задаётся (1 часть связки)
     // @characteristic - характеристика данного товара (2 часть связки)
     // @price - цена товара
-    var product: Product? = null
-    var characteristic: Characteristic? = null
+    var product: Product? = null,
+    var characteristic: Characteristic? = null,
     var price: Double = 0.0
-}
+): RealmObject()

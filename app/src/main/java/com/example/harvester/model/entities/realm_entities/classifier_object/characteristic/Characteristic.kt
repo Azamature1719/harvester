@@ -6,14 +6,13 @@ import io.realm.annotations.PrimaryKey
 import java.util.*
 
 //  -- Описание объекта элемента справочника Номенклатуры --
-open class Characteristic: RealmObject() {
-
+open class Characteristic (
     // -- Характеристики класса --
     @PrimaryKey
-    var uuid: String = UUID.randomUUID().toString()
-    var code: String = ""
-    var description: String = ""
+    var uuid: String = UUID.randomUUID().toString(),
+    var code: String = "",
+    var description: String = "",
 
     // @product - какому товару принадлежит данная характеристика
     var product: Product? = null
-}
+): RealmObject()

@@ -5,16 +5,15 @@ import io.realm.annotations.PrimaryKey
 import java.util.*
 
 // -- Описание записи регистра Штрихкоды транспортных упаковок
-open class Container: RealmObject() {
-
+open class Container(
     // -- Характеристики объекта класса --
     @PrimaryKey
-    var uuid: String = UUID.randomUUID().toString()
-    var currentDate: Date = Date()
+    var uuid: String = UUID.randomUUID().toString(),
+    var currentDate: Date = Date(),
     //  var dateText: String = ""
 
     // @barcode - штрихкод транспортной упаковки
     // @containerBarcode - в какую транспортную упаковку вложена данная упаковка
-    var barcode: String = ""
+    var barcode: String = "",
     var containerBarcode:Container? = null
-}
+):RealmObject()

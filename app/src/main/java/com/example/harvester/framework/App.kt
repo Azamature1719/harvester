@@ -12,24 +12,19 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        databaseInit(context = this)
+        initRealm()
         startKoin {
             androidContext(this@App)
             modules(appModule)
         }
     }
 
-
-    companion object {
-        lateinit var realm: Realm
-
-        fun databaseInit(context: Context) {
-            Realm.init(context)
-            val config = RealmConfiguration.Builder().name("harvester_realm")
-                .deleteRealmIfMigrationNeeded()
-                .build()
-            realm = Realm.getInstance(config)
-            Realm.setDefaultConfiguration(config)
-        }
+    fun initRealm() {
+        Realm.init(this@App)
+        val config = RealmConfiguration.Builder()
+            .name("harvester_realm")
+            .deleteRealmIfMigrationNeeded()
+            .build()
+        Realm.setDefaultConfiguration(config)
     }
 }

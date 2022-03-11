@@ -7,22 +7,21 @@ import io.realm.annotations.PrimaryKey
 import java.util.*
 
 // -- Описание записи регистра Собранные штрихкоды --
-open class BarcodeHarvested: RealmObject() {
-
+open class BarcodeHarvested(
     // -- Характеристики объекта класса --
     @PrimaryKey
-    var uuid: String = UUID.randomUUID().toString()
-    var currentDate: Date = Date()
-    //var dateText: String = ""
+    var uuid: String = UUID.randomUUID().toString(),
+    var currentDate: Date = Date(),
+    var dateText: String = "",
 
     // @owner_guid - для первичной инициализации
     // @owner - товар, штрихкод которого был собран
     // @barcode - штрихкод отсканированного товара
     // @quantity - количество собранных товаров
     // @quantityAcc - количество требуемых к сохранению
-    private var owner_guid: String = "00000000-0000-0000-0000-000000000000"
-    var owner: DataHarvested? = null
-    var barcode: Barcode? = null
-    var quantity: Double = 0.0
-    var quantityAcc: Double = 0.0
-}
+    private var owner_guid: String = "00000000-0000-0000-0000-000000000000",
+    var owner: DataHarvested? = null,
+    var barcode: Barcode? = null,
+    var quantity: Double = 0.0,
+    var quantityAcc: Double = 0.0,
+): RealmObject()
