@@ -1,15 +1,19 @@
 package com.example.harvester.model.repository
 
-import com.example.harvester.MainActivity
-import com.example.harvester.framework.App
+import android.util.Log
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import com.example.harvester.model.DTO.ProductInfoDTO
 import com.example.harvester.model.DTO.XMLRecordDTO
 import com.example.harvester.model.XMLParser
+import com.example.harvester.model.api.RestService
 import com.example.harvester.model.entities.TableOfGoodsXML
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.ffetch
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.findAll
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
+import com.example.harvester.model.entities.realm_entities.classifier_object.product.clear
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.ffetch
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.findAll
 import com.example.harvester.model.entities.realm_entities.information_register.barcode.Barcode
@@ -22,18 +26,30 @@ import com.example.harvester.model.entities.realm_entities.information_register.
 import com.example.harvester.model.entities.realm_entities.information_register.data_harvested.update
 import com.example.harvester.model.entities.realm_entities.information_register.price.Price
 import com.example.harvester.model.entities.realm_entities.information_register.price.update
-import io.realm.Realm
-import io.realm.kotlin.where
+import com.example.harvester.model.entities.realm_extensions.deleteAll
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
 class RepositoryImpl: Repository {
 
-    override fun getProductsFromDatabase(): MutableList<ProductInfoDTO> {
-        val productsFromXML = getProductsFromXMLTable()
-         runBlocking { withContext(Dispatchers.IO){ fullFillDatabase(productsFromXML) }}
+    override fun fillDatabase(tableOfGoods: String) {
+        runBlocking {
+            withContext(Dispatchers.IO){
+                fullFillDatabase(getProductsFromTable(tableOfGoods))
+            }
+        }
+    }
 
+    override fun clear(){
+        runBlocking {
+            withContext(Dispatchers.IO){
+                Product().clear()
+            }
+        }
+    }
+
+    override fun getProductsFromDatabase(): MutableList<ProductInfoDTO> {
         val products: List<Product> = Product().findAll()
         val characteristics: List<Characteristic> = Characteristic().findAll()
 
@@ -55,8 +71,8 @@ class RepositoryImpl: Repository {
     }
 
 
-    override fun getProductsFromXMLTable(): MutableList<XMLRecordDTO> {
-        return XMLParser.parseXML(TableOfGoodsXML.emptyTable)
+    override fun getProductsFromTable(tableOfGoods: String): MutableList<XMLRecordDTO> {
+        return XMLParser.parseXML(tableOfGoods)
     }
 
     override fun fullFillDatabase(records: MutableList<XMLRecordDTO>) {
@@ -94,15 +110,20 @@ class RepositoryImpl: Repository {
             val characteristic = Characteristic().ffetch(record, product)
             val barcodeRecord = Barcode().ffetch(barcode, product, characteristic)
 
-            var price = record.price
-            if (price > 0.0 || price != null)
-                Price().update(price.toDouble(), product, characteristic)
+            var price: Double? = record.price
+            if (price != null) {
+                if (price > 0.0)
+                    Price().update(price.toDouble(), product, characteristic)
+            }
 
-            var quantity = record.quantity
+            var quantity: Int? = record.quantity
 
             // Quantity == 0 -> Запись в DHRM / BHRM не производится
-            if (quantity > 0 || quantity != null) {
-                val desc = barcode
+            if (quantity != null) {
+
+                var desc: String = " "
+                if(quantity > 0)
+                    desc = barcode
 
                 // Скорее всего из-за того, что в полях другой тип данных поиск с приведением к строке не работает
                 val dataHarvestedRecord = DataHarvested().update(

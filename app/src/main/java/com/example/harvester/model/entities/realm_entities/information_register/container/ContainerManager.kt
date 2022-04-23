@@ -1,15 +1,7 @@
 package com.example.harvester.model.entities.realm_entities.information_register.container
 
-import androidx.core.content.contentValuesOf
-import com.example.harvester.MainActivity
-import com.example.harvester.framework.App
-import com.vicpin.krealmextensions.*
-import io.realm.CollectionUtils.copyToRealm
-import io.realm.Realm
-import io.realm.internal.ObjectServerFacade
-import io.realm.kotlin.where
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import com.example.harvester.model.entities.realm_extensions.queryFirst
+import com.example.harvester.model.entities.realm_extensions.save
 
 fun Container.ffetch(barcode: String?, containerBarcode: String = ""): Container? {
 
@@ -18,8 +10,7 @@ fun Container.ffetch(barcode: String?, containerBarcode: String = ""): Container
 
     var containerRef: Container?
     if(container == null){
-        Container(barcode = barcode).save()
-        containerRef = Container().queryLast()
+        containerRef = Container(barcode = barcode).save()
     }
     else
         return container

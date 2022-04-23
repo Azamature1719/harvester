@@ -1,16 +1,11 @@
 package com.example.harvester.model.entities.realm_entities.classifier_object.product
 
-import com.example.harvester.MainActivity
-import com.example.harvester.framework.App
 import com.example.harvester.model.DTO.XMLRecordDTO
 import com.example.harvester.model.entities.realm_entities.product_type.ProductType
-import com.vicpin.krealmextensions.*
-import io.realm.CollectionUtils.copyToRealm
-import io.realm.Realm
-import io.realm.RealmObject
-import io.realm.kotlin.where
-import kotlinx.coroutines.*
-import kotlin.reflect.typeOf
+import com.example.harvester.model.entities.realm_extensions.deleteAll
+import com.example.harvester.model.entities.realm_extensions.queryAll
+import com.example.harvester.model.entities.realm_extensions.queryFirst
+import com.example.harvester.model.entities.realm_extensions.save
 
 fun Product.ffetch(record: XMLRecordDTO): Product?{
     var description: String?
@@ -50,9 +45,8 @@ fun Product.ffetch(record: XMLRecordDTO): Product?{
     }
     else
         product._marked = markedGoodTypeCode
-    product.save()
 
-    return Product().queryLast()
+    return product.save()
 }
 
 fun Product.fetch(description: String): Product?{
@@ -61,4 +55,10 @@ fun Product.fetch(description: String): Product?{
 
 fun Product.findAll(): List<Product> {
     return Product().queryAll()
+}
+
+fun Product.clear(){
+    val p = Product()
+    p.deleteAll()
+    p.save()
 }

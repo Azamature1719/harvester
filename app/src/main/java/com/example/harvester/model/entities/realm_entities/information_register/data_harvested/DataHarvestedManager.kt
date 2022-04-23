@@ -1,17 +1,10 @@
 package com.example.harvester.model.entities.realm_entities.information_register.data_harvested
 
-import android.content.ClipDescription
-import com.example.harvester.framework.App
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
 import com.example.harvester.model.entities.realm_entities.information_register.container.Container
-import com.vicpin.krealmextensions.query
-import com.vicpin.krealmextensions.queryFirst
-import com.vicpin.krealmextensions.queryLast
-import com.vicpin.krealmextensions.save
-import io.realm.Realm
-import io.realm.kotlin.where
-import kotlinx.coroutines.runBlocking
+import com.example.harvester.model.entities.realm_extensions.queryFirst
+import com.example.harvester.model.entities.realm_extensions.save
 
 // MARK: Обновление учетного количества в регистре по ключевым реквизитам. Используется для загрузки данных из ERP системы
 fun DataHarvested.update(description: String?,
@@ -39,14 +32,13 @@ fun DataHarvested.update(description: String?,
         dataHarvested.quantityAcc += quantityAcc
         return dataHarvested
     } else {
-        DataHarvested(
+        return DataHarvested(
             description = description,
             product = product,
             characteristic = characteristic,
             container = container,
             quantityAcc = quantityAcc
         ).save()
-        return DataHarvested().queryLast()
     }
 }
 
@@ -55,8 +47,7 @@ fun DataHarvested.ffetch(description: String): DataHarvested{
     val fetchedObject = DataHarvested().fetch(description)
     if(fetchedObject != null) return fetchedObject
 
-    DataHarvested(description = description).save()
-    return DataHarvested().queryLast()!!
+    return DataHarvested(description = description).save()!!
 }
 
 fun DataHarvested.ffetch(product: Product,
@@ -73,8 +64,7 @@ fun DataHarvested.ffetch(product: Product,
             return dataHarvested
     }
 
-    DataHarvested(characteristic = characteristic, container = container, product = product).save()
-    return DataHarvested().queryLast()!!
+    return DataHarvested(characteristic = characteristic, container = container, product = product).save()!!
 }
 
 // MARK: Поиск записи регистра по ключевому полю desc

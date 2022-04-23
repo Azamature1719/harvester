@@ -29,29 +29,3 @@ object TableOfGoodsXML {
             "    <Record BarCodeBase64=\"MDUwMjU2MTE0ODUyMjG=\" Name=\"Напиток винный ЛАВЕТТИ\" MarkedGoodTypeCode=\"0\" UnitOfMeasurement=\"\" CharacteristicOfNomenclature=\"Классико, белый, сладкий 0.75\" SeriesOfNomenclature=\"\" Quality=\"\" Price=\"100\" Quantity=\"50\" Article=\"\" Alcohol=\"true\" AlcoholExcisable=\"false\" AlcoholKindCode=\"\" AlcoholCode=\"900\" AlcoholContainerSize=\"1.0\" AlcoholStrength=\"0\" AlcoholExciseStampBase64=\"QWxjb2hvbEV4Y2lzZVN0YW1e\"/>\n" +
             "</Table>"
 }
-
-//fun getDefaultShoes(): Product{
-//    return Product(
-//        uuid = UUID.randomUUID().toString(),
-//        code = "200",
-//        productName = "Ботинки BROOMAN",
-//        description = "36, Белый, 6, Искусственная кожа",
-//        article = "092-661-12",
-//        volume = null,
-//        percentage = null,
-//        productType = ProductType.shoes
-//    )
-//}
-//
-//fun getDefaultAlcohol(): Product{
-//    return Product(
-//        uuid = UUID.randomUUID().toString(),
-//        code = "1000",
-//        productName = "Изабелла ООО КРЫМСКИЕ ВИНА",
-//        description = "Вино красное полусладкое 18%",
-//        article = "011-556-17",
-//        volume = "0.750",
-//        percentage = "35",
-//        productType = ProductType.alcoholMarked
-//    )
-//}

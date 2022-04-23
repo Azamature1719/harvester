@@ -1,16 +1,14 @@
 package com.example.harvester.framework.ui.main
 
-import android.opengl.Visibility
 import android.view.LayoutInflater
-import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harvester.databinding.ProductRecyclerViewItemBinding
 import com.example.harvester.model.DTO.ProductInfoDTO
-import com.example.harvester.model.DTO.XMLRecordDTO
 import com.example.harvester.model.entities.realm_entities.product_type.ProductType
+
 
 class ProductsRecyclerView () : RecyclerView.Adapter<ProductsRecyclerView.ProductItemViewHolder>() {
     private lateinit var listItems: MutableList<ProductInfoDTO>

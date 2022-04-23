@@ -11,7 +11,6 @@ open class ProcessingStatus: RealmObject() {
     @PrimaryKey
     var uuid: String = UUID.randomUUID().toString()
     var currentDate: Date = Date()
-    //   var dateText: String = ""
 
     enum class ProcessingStatusType(val status: String){
         processing("ОБРАБАТЫВАЕТСЯ"),

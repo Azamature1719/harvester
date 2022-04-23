@@ -1,6 +1,5 @@
 package com.example.harvester.model.entities.realm_entities.information_register.data_harvested
 
-import android.content.ClipDescription
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
 import com.example.harvester.model.entities.realm_entities.information_register.container.Container

@@ -1,7 +1,6 @@
 package com.example.harvester.model
 
 import com.example.harvester.model.DTO.XMLRecordDTO
-import com.example.harvester.model.entities.realm_entities.product_type.ProductType
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import java.io.StringReader
@@ -10,8 +9,8 @@ object XMLParser {
     private var factory: XmlPullParserFactory = XmlPullParserFactory.newInstance()
     private var parser: XmlPullParser = factory.newPullParser()
 
-    fun parseXML(TableOfGoods: String): MutableList<XMLRecordDTO> {
-        parser.setInput(StringReader(TableOfGoods))
+    fun parseXML(tableOfGoods: String): MutableList<XMLRecordDTO> {
+        parser.setInput(StringReader(tableOfGoods))
         var listOfRecords = mutableListOf<XMLRecordDTO>()
         while(parser.eventType != XmlPullParser.END_DOCUMENT){
             if(parser.name == "Record"){ // Чтобы не рассматривать тег Table

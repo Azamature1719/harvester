@@ -4,9 +4,8 @@ package com.example.harvester.model.entities.realm_entities.information_register
 
 import com.example.harvester.model.entities.realm_entities.information_register.barcode.Barcode
 import com.example.harvester.model.entities.realm_entities.information_register.data_harvested.DataHarvested
-import com.vicpin.krealmextensions.queryFirst
-import com.vicpin.krealmextensions.save
-import io.realm.kotlin.where
+import com.example.harvester.model.entities.realm_extensions.queryFirst
+import com.example.harvester.model.entities.realm_extensions.save
 
 // MARK: Обновление учетного количества в регистре по ключевым реквизитам. Используется для загрузки данных из ERP системы
 fun BarcodeHarvested.update(owner: DataHarvested, barcode: Barcode, quantityAcc: Double){
