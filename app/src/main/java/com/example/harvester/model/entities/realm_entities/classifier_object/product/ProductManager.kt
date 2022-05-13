@@ -58,7 +58,5 @@ fun Product.findAll(): List<Product> {
 }
 
 fun Product.clear(){
-    val p = Product()
-    p.deleteAll()
-    p.save()
+    Product().deleteAll()
 }

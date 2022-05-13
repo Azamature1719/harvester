@@ -2,6 +2,7 @@ package com.example.harvester.model.entities.realm_entities.classifier_object.ch
 
 import com.example.harvester.model.DTO.XMLRecordDTO
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
+import com.example.harvester.model.entities.realm_extensions.deleteAll
 import com.example.harvester.model.entities.realm_extensions.queryAll
 import com.example.harvester.model.entities.realm_extensions.queryFirst
 import com.example.harvester.model.entities.realm_extensions.save
@@ -24,4 +25,8 @@ fun Characteristic.fetch(description: String): Characteristic?{
 
 fun Characteristic.findAll(): List<Characteristic> {
     return Characteristic().queryAll()
+}
+
+fun Characteristic.clear(){
+    Characteristic().deleteAll()
 }

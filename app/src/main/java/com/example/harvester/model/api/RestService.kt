@@ -31,7 +31,6 @@ class RestService {
             override fun onFailure(call: Call<WebServiceResponse>, t: Throwable) {
                 Log.e(TAG, "Ошибка получения таблицы товаров", t)
             }
-
             override fun onResponse(
                 call: Call<WebServiceResponse>,
                 response: Response<WebServiceResponse>
@@ -41,7 +40,6 @@ class RestService {
                 responseLiveData.postValue(webServiceResponse!!.table)
             }
         })
-
         return responseLiveData
     }
 }

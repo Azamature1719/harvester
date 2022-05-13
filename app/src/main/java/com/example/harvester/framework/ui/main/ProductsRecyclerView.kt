@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.harvester.databinding.ProductRecyclerViewItemBinding
 import com.example.harvester.model.DTO.ProductInfoDTO
+import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingModeType
 import com.example.harvester.model.entities.realm_entities.product_type.ProductType
 
 
-class ProductsRecyclerView () : RecyclerView.Adapter<ProductsRecyclerView.ProductItemViewHolder>() {
+class ProductsRecyclerView (var mode:ProcessingModeType) : RecyclerView.Adapter<ProductsRecyclerView.ProductItemViewHolder>() {
     private lateinit var listItems: MutableList<ProductInfoDTO>
 
     fun setItems(items: MutableList<ProductInfoDTO>) {
-        println(items)
         listItems = items
         notifyDataSetChanged()
     }
@@ -45,9 +45,16 @@ class ProductsRecyclerView () : RecyclerView.Adapter<ProductsRecyclerView.Produc
             }
             binding.productName.text = item.name
             binding.productDescription.text = item.description
-            binding.productNotScannedCount.text = item.quantity.toString()
-            binding.productSum.text = (item.price * item.quantity).toString()
-            binding.productNotScannedCount.text = item.quantity.toString()
+            if(mode == ProcessingModeType.collection){
+                binding.productNotScannedCount.visibility = GONE
+                binding.productSum.visibility = GONE
+                binding.labelSum.visibility = GONE
+            }
+            if(mode == ProcessingModeType.revision){
+                binding.productNotScannedCount.text = item.quantityAcc.toString()
+                binding.productSum.text = (item.price * item.quantityAcc).toString()
+            }
+            binding.productScannedCount.text = item.quantity.toString()
         }
     }
 }

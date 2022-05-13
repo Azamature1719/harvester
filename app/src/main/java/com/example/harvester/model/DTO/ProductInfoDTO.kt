@@ -8,6 +8,7 @@ data class ProductInfoDTO (
     var description: String? = null,
     var price: Double = 0.0,
     var quantity: Int = 0,
+    var quantityAcc: Int = 0,
     var markedGoodTypeCode: Int = ProductType.none.ordinal,
     var alcoholCode: String? = null,
     var alcoholVolume: Double? = null,

@@ -4,6 +4,7 @@ package com.example.harvester.model.entities.realm_entities.information_register
 
 import com.example.harvester.model.entities.realm_entities.information_register.barcode.Barcode
 import com.example.harvester.model.entities.realm_entities.information_register.data_harvested.DataHarvested
+import com.example.harvester.model.entities.realm_extensions.deleteAll
 import com.example.harvester.model.entities.realm_extensions.queryFirst
 import com.example.harvester.model.entities.realm_extensions.save
 
@@ -34,4 +35,8 @@ fun BarcodeHarvested.fetch(barcode: Barcode): BarcodeHarvested?{
 // MARK: Поиск записей регистра по владельцу
 fun BarcodeHarvested.fetch(owner: DataHarvested): BarcodeHarvested?{
     return BarcodeHarvested().queryFirst{equalTo("owner_guid", owner.uuid)}
+}
+
+fun BarcodeHarvested.clear(){
+    BarcodeHarvested().deleteAll()
 }

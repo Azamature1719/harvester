@@ -3,6 +3,8 @@ package com.example.harvester.model.entities.realm_entities.information_register
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
 import com.example.harvester.model.entities.realm_entities.information_register.container.Container
+import com.example.harvester.model.entities.realm_extensions.deleteAll
+import com.example.harvester.model.entities.realm_extensions.queryAll
 import com.example.harvester.model.entities.realm_extensions.queryFirst
 import com.example.harvester.model.entities.realm_extensions.save
 
@@ -46,24 +48,19 @@ fun DataHarvested.update(description: String?,
 fun DataHarvested.ffetch(description: String): DataHarvested{
     val fetchedObject = DataHarvested().fetch(description)
     if(fetchedObject != null) return fetchedObject
-
     return DataHarvested(description = description).save()!!
 }
 
 fun DataHarvested.ffetch(product: Product,
                          characteristic: Characteristic,
                          container: Container?): DataHarvested{
-
     val dataHarvested = DataHarvested().queryFirst{
         equalTo("product.uuid", product.uuid).and().
         equalTo("characteristic", characteristic.uuid)}
-
     if(dataHarvested != null){
-        if (dataHarvested.quantityAcc == 0.0 ||
-            dataHarvested.quantity < dataHarvested.quantityAcc)
+        if (dataHarvested.quantityAcc == 0.0 || dataHarvested.quantity < dataHarvested.quantityAcc)
             return dataHarvested
     }
-
     return DataHarvested(characteristic = characteristic, container = container, product = product).save()!!
 }
 
@@ -80,4 +77,12 @@ fun DataHarvested.fetch(product: Product?, characteristic: Characteristic?, cont
          equalTo("characteristic.uuid", characteristic.uuid).and().
          equalTo("container.uuid", container.uuid)
     }
+}
+
+fun DataHarvested.findAll(): List<DataHarvested> {
+    return DataHarvested().queryAll()
+}
+
+fun DataHarvested.clear(){
+    DataHarvested().deleteAll()
 }

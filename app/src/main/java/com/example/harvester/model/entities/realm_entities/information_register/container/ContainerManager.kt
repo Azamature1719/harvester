@@ -1,5 +1,6 @@
 package com.example.harvester.model.entities.realm_entities.information_register.container
 
+import com.example.harvester.model.entities.realm_extensions.deleteAll
 import com.example.harvester.model.entities.realm_extensions.queryFirst
 import com.example.harvester.model.entities.realm_extensions.save
 
@@ -27,4 +28,8 @@ fun Container.fetch(containerBarcode: Container):Container? {
 
 fun Container.fetch(barcode: String): Container? {
     return Container().queryFirst { equalTo("barcode", barcode) }
+}
+
+fun Container.clear(){
+    Container().deleteAll()
 }

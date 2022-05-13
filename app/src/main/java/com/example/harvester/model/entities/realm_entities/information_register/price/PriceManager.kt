@@ -2,6 +2,7 @@ package com.example.harvester.model.entities.realm_entities.information_register
 
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.Product
+import com.example.harvester.model.entities.realm_extensions.deleteAll
 import com.example.harvester.model.entities.realm_extensions.queryFirst
 import com.example.harvester.model.entities.realm_extensions.save
 
@@ -30,4 +31,8 @@ fun Price.price(product: Product?, characteristic: Characteristic?): Double? {
     if(product == null && characteristic == null) return 0.0
     val obj = fetch(product, characteristic) // MARK: Если NULL, возвращается 0.0, в противном случае - значение price
     return obj?.price ?: 0.0
+}
+
+fun Price.clear(){
+    Price().deleteAll()
 }
