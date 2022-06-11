@@ -10,5 +10,5 @@ val appModule = module {
     single<Repository> { RepositoryImpl() }
 
     // ViewModels
-    viewModel { MainViewModel(get()) }
+    viewModel { MainViewModel(get())}
 }

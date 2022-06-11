@@ -2,30 +2,63 @@ package com.example.harvester.framework.ui.main
 
 import androidx.lifecycle.*
 import com.example.harvester.framework.ui.state.AppState
-import com.example.harvester.model.entities.TableOfGoodsXML
+import com.example.harvester.model.api.TableOfGoodsAPI
+import com.example.harvester.model.api.WebServiceResponse
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingModeType
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingStatusType
 import com.example.harvester.model.repository.Repository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import okhttp3.Dispatcher
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
-class MainViewModel (private val repository: Repository) : ViewModel(), LifecycleObserver {
+class MainViewModel (private val repository: Repository)
+    : ViewModel(), LifecycleObserver {
+
     private var liveDataToObserve = MutableLiveData<AppState>()
+    private lateinit var tableOfGoodsAPI: TableOfGoodsAPI
+    private val retrofit: Retrofit = Retrofit.Builder()
+        .baseUrl("http://192.168.137.1:15085/")
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
 
     // MARK: Получить объект LiveData
     fun getLiveData() = liveDataToObserve
 
-    // MARK: Загрузить товары в базу данных
-    fun uploadProducts(){
-        repository.fillDatabase(TableOfGoodsXML.fullTable)
-        liveDataToObserve.postValue(AppState.ProductsUploaded)
+    // MARK: Получить таблицу товаров от веб-сервера
+    fun downloadTable(){
+        tableOfGoodsAPI = retrofit.create(TableOfGoodsAPI::class.java)
+        val webServiceRequest: Call<WebServiceResponse> = tableOfGoodsAPI.fetchTable(id="0000-0008")
+        webServiceRequest.enqueue(object : Callback<WebServiceResponse> {
+            override fun onFailure(call: Call<WebServiceResponse>, t: Throwable) {
+                liveDataToObserve.postValue(AppState.ErrorOccured("Произошла ошибка при получении таблицы от сервера"))
+            }
+            override fun onResponse(call: Call<WebServiceResponse>, response: Response<WebServiceResponse>) {
+                val webServiceResponse: WebServiceResponse? = response.body()
+                liveDataToObserve.postValue(AppState.TableDownloaded(webServiceResponse!!.table))
+            }
+        })
+    }
+
+    // MARK: Сохранить данные о товарах в базе данных
+    fun fillDatabaseWith(table: String){
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.fillDatabase(table)
+            liveDataToObserve.postValue(AppState.DatabaseFilled)
+        }
     }
 
     // MARK: Удалить данные из базы данных
-    fun clearDatabase(){
+    fun deleteTable(){
         if(repository.isEmpty())
             liveDataToObserve.postValue(AppState.NoData)
         else{
             repository.clearDatabase()
-            liveDataToObserve.postValue(AppState.ProductsDeleted)
+            liveDataToObserve.postValue(AppState.TableDeleted)
         }
     }
 
@@ -33,31 +66,15 @@ class MainViewModel (private val repository: Repository) : ViewModel(), Lifecycl
         return repository.getProcessingMode() == ProcessingModeType.none
     }
 
-    fun getProcessingStatus(): ProcessingStatusType {
-        return repository.getProcessingStatus()
-    }
-
-    fun getProcessingMode(): ProcessingModeType {
-        return repository.getProcessingMode()
-    }
-
-    // MARK: Выбран режим сверки товаров
-    fun startRevision(){
-        if(repository.isEmpty())
-            liveDataToObserve.postValue(AppState.NoData)
-        else{
-            repository.setRevision()
-            liveDataToObserve.postValue(AppState.Revision(repository.getProductsFromDatabase()))
-        }
-    }
-
-    // MARK: Выбран режим сбора товаров
-    fun startCollection(){
-        if(repository.isEmpty())
-            liveDataToObserve.postValue(AppState.NoData)
-        else {
-            repository.setCollection()
-            liveDataToObserve.postValue(AppState.Collection(repository.getProductsFromDatabase()))
+    // Установить режим работы
+    fun setProcessingMode(){
+        when(repository.getProcessingMode()){
+            ProcessingModeType.collection ->{
+                liveDataToObserve.postValue(AppState.Collection(repository.getProductsFromDatabase()))
+            }
+            ProcessingModeType.revision ->{
+                liveDataToObserve.postValue(AppState.Revision(repository.getProductsFromDatabase()))
+            }
         }
     }
 

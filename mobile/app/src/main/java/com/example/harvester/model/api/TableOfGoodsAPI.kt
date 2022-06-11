@@ -1,6 +1,5 @@
 package com.example.harvester.model.api
 
-import com.example.harvester.model.DTO.WebServiceResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,6 +14,7 @@ interface TableOfGoodsAPI {
 
     @POST("/")
     fun saveTable(
+        @Header("Device-Id") id: String,
         @Body() table: String
     ): Call<String>
 }

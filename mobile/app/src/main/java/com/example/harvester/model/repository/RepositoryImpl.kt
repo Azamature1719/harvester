@@ -37,11 +37,7 @@ import kotlinx.coroutines.withContext
 class RepositoryImpl: Repository {
     // MARK: Заполнить базу данных из переданной XML-таблицы товаров
     override fun fillDatabase(tableOfGoods: String) {
-        runBlocking {
-            withContext(Dispatchers.IO){
-                fullFillDatabase(parseTable(tableOfGoods))
-            }
-        }
+        fullFillDatabase(parseTable(tableOfGoods))
     }
     // MARK: Удаление всех данных из базы данных
     override fun clearDatabase(){
@@ -92,6 +88,7 @@ class RepositoryImpl: Repository {
 
     // MARK: Заполнить базу данных товарами из распарсенной таблицы товаров
     override fun fullFillDatabase(records: MutableList<XMLRecordDTO>) {
+        var current_mode: ProcessingModeType = ProcessingModeType.collection
         for (record in records) {
             // -- Извлечение данных из таблицы товаров --
             // -- Штрихкод  --
@@ -155,6 +152,10 @@ class RepositoryImpl: Repository {
                 }
             }
         }
+        if(DataHarvested().count() > 0)
+            setRevision()
+        else
+            setCollection()
     }
 
     // MARK: Получить режим заполнения документа

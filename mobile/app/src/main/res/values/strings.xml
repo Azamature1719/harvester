@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Harvester</string>
+    <string name="app_name">Харвестер</string>
     <string name="toolbar_dots">dots</string>
     <string name="toolbar_scan">scan</string>
     <string name="toolbar_menu">menu</string>

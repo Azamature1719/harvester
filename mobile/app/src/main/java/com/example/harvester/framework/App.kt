@@ -20,18 +20,20 @@ import java.util.*
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        initRealm()
         startKoin {
             androidContext(this@App)
             modules(appModule)
         }
+        initRealm()
     }
 
     fun initRealm() {
         Realm.init(this@App)
         val config = RealmConfiguration.Builder()
             .name("harvester_realm")
-            .initialData (){it.createObject(ProcessingDocument::class.java, UUID.randomUUID().toString())}
+            .initialData (){
+                it.createObject(ProcessingDocument::class.java, UUID.randomUUID().toString())
+            }
             .deleteRealmIfMigrationNeeded()
             .build()
         Realm.setDefaultConfiguration(config)
