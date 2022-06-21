@@ -16,7 +16,7 @@ class MLKitBarcodeAnalyzer(private val listener: ScanningResultListener) : Image
     private var isScanning: Boolean = true
 
     private val barcodeScannerOptions = BarcodeScannerOptions.Builder()
-        .setBarcodeFormats(Barcode.FORMAT_DATA_MATRIX, Barcode.FORMAT_EAN_13, Barcode.FORMAT_QR_CODE)
+        .setBarcodeFormats(Barcode.FORMAT_DATA_MATRIX, Barcode.FORMAT_EAN_13)
         .build()
 
     private val scanner = BarcodeScanning.getClient(barcodeScannerOptions)

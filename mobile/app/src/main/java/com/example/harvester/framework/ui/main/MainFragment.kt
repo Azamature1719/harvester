@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.harvester.R
 import com.example.harvester.databinding.MainFragmentBinding
@@ -20,12 +21,11 @@ import com.example.harvester.framework.ui.camera.HarvesterCameraFragment
 import com.example.harvester.framework.ui.dialog.BottomSheetButton
 import com.example.harvester.framework.ui.dialog.ButtonClick
 import com.example.harvester.framework.ui.dialog.ModalBottomSheet
-import com.example.harvester.framework.ui.main.allertview.UIAllertAction
 import com.example.harvester.framework.ui.state.AppState
 import com.example.harvester.model.DTO.ProductInfoDTO
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingModeType
-import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingStatusType
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.scancity.enterprise.ui.allert.action.UIAlertAction
 
 class MainFragment : Fragment() {
 
@@ -54,57 +54,64 @@ class MainFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-
-    private val databaseMenuButtons = mutableListOf(
-        BottomSheetButton("Загрузить товары", object : ButtonClick {
-            override fun onClick( ) { viewModel.downloadTable() }}),
-        BottomSheetButton("Удалить товары", object : ButtonClick {
-            override fun onClick( ) { viewModel.deleteTable() }}, true),
-        BottomSheetButton("Настройки подключения", object : ButtonClick {
-            override fun onClick( ) { }})
-    )
-
-    private val documentMenuButtons = mutableListOf(
-        BottomSheetButton("Выгрузить документ", object : ButtonClick {
-            override fun onClick( ) { viewModel.sendDocument() }}),
-        BottomSheetButton("Очистить документ", object : ButtonClick {
-            override fun onClick( ) { viewModel.clearDocument() }}, true),
-    )
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(viewModel.modeIsNone()) {
-            if(item.itemId == android.R.id.home) {
-                val modalBottomSheet = ModalBottomSheet(databaseMenuButtons)
-                modalBottomSheet.show(parentFragmentManager, ModalBottomSheet.TAG)
-            }
-        }
-        else {
-            when(item.itemId){
-                R.id.toolbar_settings -> {
-                    val modalBottomSheet = ModalBottomSheet(documentMenuButtons)
-                    modalBottomSheet.show(parentFragmentManager, ModalBottomSheet.TAG)
+        if(item.itemId == android.R.id.home) {
+            UIAlertAction()
+                .button("Загрузить товары") { viewModel.downloadTable() }
+                .button("Удалить товары") { viewModel.deleteTable() }
+                .button("Настройки подключения") {
+                    UIAlertAction()
+                        .title("Адрес веб-сервиса")
+                        .edit(viewModel.getWebServiceAddress()) {
+                            viewModel.setWebServiceAddress(it.toString())
+                        }
+                        .cancel("Сохранить")
+                        .show()
                 }
-                R.id.toolbar_scan -> {
-                    startScanning()
-                }
-            }
+                .show()
         }
+        if(item.itemId == R.id.toolbar_settings) {
+            UIAlertAction()
+                .button("Выгрузить документ"){ viewModel.sendDocument() }
+                .button("Очистить документ"){
+                    when(viewModel.getProcessingMode()){
+                        ProcessingModeType.collection -> viewModel.clearDocumentCollection()
+                        ProcessingModeType.revision -> viewModel.clearDocumentRevision()
+                    }
+                }
+                .show()
+        }
+        if(item.itemId == R.id.toolbar_scan) {
+            startScanning()
+        }
+
+        //if(viewModel.modeIsNone()) {
+//        }
+//        else {
+//            when(item.itemId){
+//                R.id.toolbar_settings -> {
+//                }
+//                R.id.toolbar_scan -> {
+//                }
+//            }
+//        }
         return super.onOptionsItemSelected(item)
     }
 
     private fun renderData(appState: AppState){
         when(appState){
             is AppState.TableDownloaded -> {
+                viewModel.deleteTable()
                 viewModel.fillDatabaseWith(appState.table)
             }
             is AppState.DatabaseFilled -> {
                 viewModel.setProcessingMode()
             }
             is AppState.NoData -> {
-                Toast.makeText(requireContext(), "В базе данных товаров нет", Toast.LENGTH_SHORT).show()
+               // Toast.makeText(requireContext(), "В базе данных товаров нет", Toast.LENGTH_SHORT).show()
             }
             is AppState.TableDeleted -> {
-                Toast.makeText(requireContext(), "Товары удалены", Toast.LENGTH_SHORT).show()
+//                Toast.makeText(requireContext(), "Товары удалены", Toast.LENGTH_SHORT).show()
             }
             is AppState.Revision -> {
                 setToolbarTitle("Сверка")
@@ -115,17 +122,11 @@ class MainFragment : Fragment() {
                 setItems(appState.listOfProducts)
             }
             is AppState.DocumentCleaned -> {
-                setToolbarTitle("Харвестер")
-                adapter.setItems(mutableListOf())
-                adapter.notifyItemChanged(1)
-                adapter.notifyDataSetChanged()
                 Toast.makeText(requireContext(), "Документ очищен", Toast.LENGTH_SHORT).show()
             }
             is AppState.DocumentSent -> {
                 setToolbarTitle("Харвестер")
-                adapter.setItems(mutableListOf())
-                adapter.notifyDataSetChanged()
-                Toast.makeText(requireContext(), "Документ выгружен", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), appState.message, Toast.LENGTH_SHORT).show()
             }
             is AppState.ErrorOccured -> {
                 Toast.makeText(requireContext(), appState.error, Toast.LENGTH_SHORT).show()

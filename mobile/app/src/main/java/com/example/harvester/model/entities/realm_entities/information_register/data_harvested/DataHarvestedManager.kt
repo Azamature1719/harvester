@@ -32,6 +32,7 @@ fun DataHarvested.update(description: String?,
 
     if(dataHarvested != null){
         dataHarvested.quantityAcc += quantityAcc
+        dataHarvested.save()
         return dataHarvested
     } else {
         return DataHarvested(
@@ -56,7 +57,7 @@ fun DataHarvested.ffetch(product: Product,
                          container: Container?): DataHarvested{
     val dataHarvested = DataHarvested().queryFirst{
         equalTo("product.uuid", product.uuid).and().
-        equalTo("characteristic", characteristic.uuid)}
+        equalTo("characteristic.uuid", characteristic.uuid)}
     if(dataHarvested != null){
         if (dataHarvested.quantityAcc == 0.0 || dataHarvested.quantity < dataHarvested.quantityAcc)
             return dataHarvested

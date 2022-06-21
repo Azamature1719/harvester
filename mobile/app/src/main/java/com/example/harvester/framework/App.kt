@@ -3,6 +3,7 @@ package com.example.harvester.framework
 import android.app.Application
 import android.content.Context
 import com.example.harvester.di.appModule
+import com.example.harvester.model.entities.realm_entities.information_register.identification.Identification
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingDocument
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingModeType
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingStatusType
@@ -20,21 +21,20 @@ import java.util.*
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
+        initRealm()
         startKoin {
             androidContext(this@App)
             modules(appModule)
         }
-        initRealm()
     }
-
-    fun initRealm() {
+    private fun initRealm() {
         Realm.init(this@App)
         val config = RealmConfiguration.Builder()
-            .name("harvester_realm")
+            .name("Harvester.realm")
             .initialData (){
                 it.createObject(ProcessingDocument::class.java, UUID.randomUUID().toString())
+                it.createObject(Identification::class.java, UUID.randomUUID().toString())
             }
-            .deleteRealmIfMigrationNeeded()
             .build()
         Realm.setDefaultConfiguration(config)
     }

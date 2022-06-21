@@ -3,6 +3,7 @@ package com.example.harvester.framework.ui.camera
 import android.annotation.SuppressLint
 import android.graphics.RectF
 import android.os.Bundle
+import android.util.Log
 import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,12 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.harvester.databinding.HarvesterCameraFragmentBinding
+import com.example.harvester.model.entities.realm_entities.information_register.data_harvested.DataHarvested
 import com.google.common.util.concurrent.ListenableFuture
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -32,8 +38,18 @@ class HarvesterCameraFragment : Fragment() {
     private var imageAnalysis: ImageAnalysis? = null
 
     private val analyzeListener = object : ScanningResultListener {
+        var last: String = ""
         override fun onScanned(result: String) {
-            Toast.makeText(requireContext(), result, Toast.LENGTH_SHORT).show()
+            if(result != last){
+                CoroutineScope(Dispatchers.IO).launch {
+                    val processingRes = BarcodeHandler.processingMultiDecodedData(Decode.init(result))
+                    MainScope().launch {
+                        //val r = (processingRes as? DataHarvested)
+//                        Toast.makeText(requireContext(), (processingRes as DataHarvested).product?.description, Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            last = result
         }
 
         override fun onScannedRect(rect: RectF, w: Int, h: Int, isFlipped: Boolean ) {

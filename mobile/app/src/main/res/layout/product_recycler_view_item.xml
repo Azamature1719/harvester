@@ -172,15 +172,15 @@
         </LinearLayout>
     </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/iconShoes"
         app:layout_constraintTop_toBottomOf="@id/iconBottle"
         app:layout_constraintEnd_toStartOf="@id/guidelineIconProduct"
         android:layout_marginStart="10dp">
 
         <LinearLayout
-            android:id="@+id/iconShoes"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_margin="5dp"
@@ -205,5 +205,19 @@
                 android:textColor="@color/black"
                 android:textSize="10sp" />
         </LinearLayout>
-    </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:id="@+id/iconBarcode"
+        app:layout_constraintTop_toBottomOf="@id/iconShoes"
+        app:layout_constraintEnd_toStartOf="@id/guidelineIconProduct"
+        android:layout_marginEnd="10dp">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_barcode">
+        </ImageView>
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

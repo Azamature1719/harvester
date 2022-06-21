@@ -1,5 +1,7 @@
 package com.example.harvester.model.api
 
+import com.google.gson.JsonObject
+import kotlinx.serialization.json.Json
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -15,6 +17,7 @@ interface TableOfGoodsAPI {
     @POST("/")
     fun saveTable(
         @Header("Device-Id") id: String,
-        @Body() table: String
-    ): Call<String>
+        @Header("Content-type") type: String = "application/json",
+        @Body() table: JsonObject
+    ): Call<PostRequest>
 }

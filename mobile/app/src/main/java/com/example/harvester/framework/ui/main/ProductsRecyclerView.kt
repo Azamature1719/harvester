@@ -30,17 +30,24 @@ class ProductsRecyclerView (var mode:ProcessingModeType) : RecyclerView.Adapter<
     inner class ProductItemViewHolder(private val binding: ProductRecyclerViewItemBinding) : RecyclerView.ViewHolder (binding.root) {
         fun bind(item: ProductInfoDTO) {
             when(item.markedGoodTypeCode) {
-                ProductType.shoes.ordinal ->{
-                    binding.iconBottle.visibility = GONE
-                    binding.iconShoes.visibility = VISIBLE
-                    binding.shoesArticle.text = item.article
-                }
                 ProductType.alcoholMarked.ordinal, ProductType.alcoholUnMarked.ordinal ->{
                     binding.iconBottle.visibility = VISIBLE
                     binding.iconShoes.visibility = GONE
+                    binding.iconBarcode.visibility = GONE
                     binding.alcoholCode.text = item.alcoholCode
                     binding.alcoholVolume.text = item.alcoholVolume.toString()
                     binding.alcoholStrength.text = item.alcoholCapacity.toString()
+                }
+                ProductType.shoes.ordinal ->{
+                    binding.iconShoes.visibility = VISIBLE
+                    binding.iconBarcode.visibility = GONE
+                    binding.iconBottle.visibility = GONE
+                    binding.shoesArticle.text = item.article
+                }
+                else ->{
+                    binding.iconBarcode.visibility = VISIBLE
+                    binding.iconBottle.visibility = GONE
+                    binding.iconShoes.visibility = GONE
                 }
             }
             binding.productName.text = item.name

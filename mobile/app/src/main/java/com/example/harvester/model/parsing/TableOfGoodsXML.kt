@@ -1,7 +1,4 @@
-package com.example.harvester.model.entities
-
-import com.example.harvester.model.entities.realm_entities.product_type.ProductType
-import java.util.*
+package com.example.harvester.model.parsing
 
 object TableOfGoodsXML {
     val emptyTable: String = "<Table FullLoad=\"true\">\n" +

@@ -9,7 +9,7 @@ sealed class AppState {
     object DatabaseFilled: AppState()
     data class Revision(val listOfProducts: MutableList<ProductInfoDTO>): AppState()
     data class Collection(val listOfProducts: MutableList<ProductInfoDTO>): AppState()
-    object DocumentSent: AppState()
+    data class DocumentSent(val message: String): AppState()
     object DocumentCleaned: AppState()
     data class ErrorOccured(val error: String = "Ошибка"): AppState()
 }

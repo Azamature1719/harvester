@@ -2,11 +2,10 @@ package com.example.harvester.model.repository
 
 import com.example.harvester.model.DTO.ProductInfoDTO
 import com.example.harvester.model.DTO.XMLRecordDTO
-import com.example.harvester.model.XMLParser
+import com.example.harvester.model.parsing.XMLParser
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.Characteristic
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.clear
 import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.ffetch
-import com.example.harvester.model.entities.realm_entities.classifier_object.characteristic.findAll
 import com.example.harvester.model.entities.realm_entities.classifier_object.product.*
 import com.example.harvester.model.entities.realm_entities.information_register.barcode.Barcode
 import com.example.harvester.model.entities.realm_entities.information_register.barcode.clear
@@ -21,6 +20,7 @@ import com.example.harvester.model.entities.realm_entities.information_register.
 import com.example.harvester.model.entities.realm_entities.information_register.data_harvested.clear
 import com.example.harvester.model.entities.realm_entities.information_register.data_harvested.findAll
 import com.example.harvester.model.entities.realm_entities.information_register.data_harvested.update
+import com.example.harvester.model.entities.realm_entities.information_register.identification.Identification
 import com.example.harvester.model.entities.realm_entities.information_register.price.Price
 import com.example.harvester.model.entities.realm_entities.information_register.price.clear
 import com.example.harvester.model.entities.realm_entities.information_register.price.fetch
@@ -28,36 +28,20 @@ import com.example.harvester.model.entities.realm_entities.information_register.
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingDocument
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingModeType
 import com.example.harvester.model.entities.realm_entities.information_register.processing_status.ProcessingStatusType
+import com.example.harvester.model.entities.realm_entities.product_type.ProductType
 import com.example.harvester.model.entities.realm_extensions.count
 import com.example.harvester.model.entities.realm_extensions.queryLast
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
+import com.example.harvester.model.entities.realm_extensions.save
+import kotlinx.coroutines.*
 
 class RepositoryImpl: Repository {
+
     // MARK: Заполнить базу данных из переданной XML-таблицы товаров
     override fun fillDatabase(tableOfGoods: String) {
         fullFillDatabase(parseTable(tableOfGoods))
     }
-    // MARK: Удаление всех данных из базы данных
-    override fun clearDatabase(){
-        runBlocking {
-            withContext(Dispatchers.IO){
-                Product().clear()
-                Characteristic().clear()
-                Barcode().clear()
-                BarcodeHarvested().clear()
-                Container().clear()
-                DataHarvested().clear()
-                Price().clear()
-            }
-        }
-    }
 
-    override fun isEmpty(): Boolean {
-        return (Product().count() == 0L)
-    }
-
+    // MARK: Получить товары из базы данных
     override fun getProductsFromDatabase(): MutableList<ProductInfoDTO> {
         val dataHarvested: List<DataHarvested> = DataHarvested().findAll()
         var listOfProducts: MutableList<ProductInfoDTO> = mutableListOf()
@@ -70,10 +54,10 @@ class RepositoryImpl: Repository {
             curProduct.alcoholCode = dataHarvestedProduct?.alcoholCode
             curProduct.alcoholVolume = dataHarvestedProduct?.alcoholVolume
             curProduct.article = dataHarvestedProduct?.article
-            curProduct.markedGoodTypeCode = dataHarvestedProduct!!._marked
+            curProduct.markedGoodTypeCode = dataHarvestedProduct?._marked ?: ProductType.none.ordinal
             curProduct.name = dataHarvestedProduct?.description
             curProduct.description = dataHarvestedCharacteristic?.description
-            curProduct.price = dataHarvestedPrice!!.price
+            curProduct.price = dataHarvestedPrice?.price ?: 0.0
             curProduct.quantity = dataHarvested[i]?.quantity.toInt()
             curProduct.quantityAcc = dataHarvested[i]?.quantityAcc.toInt()
             listOfProducts.add(curProduct)
@@ -158,11 +142,53 @@ class RepositoryImpl: Repository {
             setCollection()
     }
 
+    override fun makeXML(): String = XMLParser.makeXML()
+
+
+    override fun clearDocumentCollection() {
+        CoroutineScope(Dispatchers.IO).launch {
+            BarcodeHarvested().clear()
+            DataHarvested().clear()
+        }
+    }
+
+    override fun clearDocumentRevision() {
+        CoroutineScope(Dispatchers.IO).launch {
+            BarcodeHarvested().clear()
+            for(dataHarvested in DataHarvested().findAll()){
+                dataHarvested.quantity = 0.0
+                dataHarvested.save()
+            }
+        }
+    }
+
+    // MARK: Удаление всех данных из базы данных
+    override fun clearDatabase(){
+
+        runBlocking {
+            withContext(Dispatchers.IO){
+                Product().clear()
+                Characteristic().clear()
+                Barcode().clear()
+                BarcodeHarvested().clear()
+                Container().clear()
+                DataHarvested().clear()
+                Price().clear()
+            }
+        }
+    }
+
+    /// MARK: Проверить, что в базе есть данные о продуктах
+    override fun isEmpty(): Boolean =
+        (Product().count() == 0L)
+
     // MARK: Получить режим заполнения документа
-    override fun getProcessingMode() = ProcessingDocument().queryLast()!!.mode
+    override fun getProcessingMode() =
+        ProcessingDocument().queryLast()!!.mode
 
     // MARK: Получить статус заполнения документа
-    override fun getProcessingStatus() = ProcessingDocument().queryLast()!!.state
+    override fun getProcessingStatus() =
+        ProcessingDocument().queryLast()!!.state
 
     // MARK: Установить режим Сбора товаров
     override fun setCollection(){
@@ -191,6 +217,25 @@ class RepositoryImpl: Repository {
                 ProcessingDocument().queryLast()!!.state = ProcessingStatusType.finished
                 ProcessingDocument().queryLast()!!.mode = ProcessingModeType.none
             }
+        }
+    }
+    // MARK: Получить хост веб-сервиса
+    override fun getWebServiceAddress() = Identification().queryLast()!!.webServiceAddress
+
+    // MARK: Получить идентификатор устройства
+    override fun getDeviceID() = Identification().queryLast()!!.deviceID
+
+    // MARK: Установить адрес веб-сервиса
+    override fun setWebServiceAddress(webServiceAddress: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            Identification().queryLast()!!.webServiceAddress = webServiceAddress
+        }
+    }
+
+    // MARK: Установить идентификатор устройства
+    override fun setDeviceID(deviceID: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            Identification().queryLast()!!.deviceID = deviceID
         }
     }
 }

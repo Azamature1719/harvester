@@ -1,13 +1,41 @@
-package com.example.harvester.model
+package com.example.harvester.model.parsing
 
+import android.util.Base64
+import android.util.Xml
 import com.example.harvester.model.DTO.XMLRecordDTO
+import com.example.harvester.model.entities.realm_entities.information_register.barcode_harvested.BarcodeHarvested
+import com.example.harvester.model.entities.realm_extensions.queryAll
+import io.realm.Realm
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
+import org.xmlpull.v1.XmlSerializer
 import java.io.StringReader
 
 object XMLParser {
     private var factory: XmlPullParserFactory = XmlPullParserFactory.newInstance()
     private var parser: XmlPullParser = factory.newPullParser()
+
+    fun makeXML(): String {
+        var barcodeHarvested = Realm.getDefaultInstance().use {
+            var query = it.where(BarcodeHarvested::class.java)
+            val result = query.findAll()
+            return@use it.copyFromRealm(result)
+        }
+        val xmlSerializer = Xml.newSerializer()
+        return xmlSerializer.document {
+            element("Table"){
+                barcodeHarvested.forEach{
+                    if(it.quantity != 0.0){
+                        element("Record"){
+                            var barcodeBase64 = Base64.encodeToString(it.barcode!!.barcode.toByteArray(), Base64.NO_WRAP)
+                            attribute("BarCodeBase64", barcodeBase64)
+                            attribute("Quantity", it.quantity.toString())
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     fun parseXML(tableOfGoods: String): MutableList<XMLRecordDTO> {
         parser.setInput(StringReader(tableOfGoods))
@@ -51,4 +79,5 @@ object XMLParser {
         }
         return listOfRecords
     }
+
 }

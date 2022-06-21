@@ -10,7 +10,7 @@ fun Barcode.ffetch(barcode: String, product: Product?, characteristic: Character
     val fetchedBarcode = fetch(barcode)
     if(fetchedBarcode != null) return fetchedBarcode
 
-    return Barcode(barcode, product = product, characteristic = characteristic).save()!!
+    return Barcode(barcode = barcode, product = product, characteristic = characteristic).save()!!
 }
 
 fun Barcode.fetch(barcode: String): Barcode? {

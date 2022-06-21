@@ -24,7 +24,10 @@ fun BarcodeHarvested.update(owner: DataHarvested, barcode: Barcode, quantityAcc:
 
 // MARK: Поиск записи регистра по строке штрихкода
 fun BarcodeHarvested.fetch(barcodeString: String): BarcodeHarvested?{
-    return BarcodeHarvested().queryFirst{equalTo("barcode", barcodeString)}
+    val barcode = Barcode().queryFirst { equalTo("barcode", barcodeString) }
+    if(barcode == null) return null
+
+    return fetch(barcode)
 }
 
 // MARK: Поиск записи регистра по элементу штрихкода

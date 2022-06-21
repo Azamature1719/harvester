@@ -11,13 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentManager
 import com.example.harvester.framework.extensions.cornerBackground
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class UIAllertAction : BottomSheetDialogFragment() {
+class UIAllertActionLast : BottomSheetDialogFragment() {
 
     private var actions: Array<Pair<String, () -> Unit>> = emptyArray()
     private var title: String? = null
@@ -100,9 +99,9 @@ class UIAllertAction : BottomSheetDialogFragment() {
 
     fun setTitle(title: String) { this.title = title }
     fun addAction(title: String, block: () -> Unit) { this.actions += Pair(title, block) }
-    fun show(manager: FragmentManager) { super.show(manager, UIAllertAction.TAG) }
+    fun show(manager: FragmentManager) { super.show(manager, UIAllertActionLast.TAG) }
 
     companion object {
-        const val TAG = "UIAllertAction"
+        const val TAG = "UIAllertActionLast"
     }
 }
